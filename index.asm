@@ -32,6 +32,7 @@ playAgain BYTE "1. Play again", 13, 10, 0
 returnMenu BYTE "2. Return to menu. ", 13, 10, 0
 guess dd ?
 random dd ?
+playChoice DWORD 0
 .code
 
 ; ==== = main ============================================ =
@@ -191,33 +192,47 @@ call WriteString
 call ReadInt
 mov guess, eax
 
-
-rdtsc
-xor edx, edx
-mov ecx, 10 - 1
-div ecx
-mov eax, edx
-
-call WriteInt; remove when done, just to see if generation is working
+mov eax, 11
+inc eax
+call RandomRange
 
 cmp eax, guess
 jne not_equal
 
 mov edx, offset playGuessCorrect
 call WriteString
-jmp end_comparision
+MOV eax, credits
+add eax, 2
+jmp endcmp
 
 not_equal:
 	mov edx, offset playGuessIncorrect
 	call WriteString
-	jmp end_comparision
+	jmp endcmp
 
 
-end_comparision:
+endcmp:
 	mov edx, offset playAgain;
 	call WriteString
 	mov edx, offset returnMenu;
 	call WriteString;
+
+	mov edx, playChoice
+	call ReadInt
+
+	cmp edx, 1
+	je restart
+
+	cmp edx, 2
+	je menu
+
+restart:
+	JMP play
+
+menu:
+	JMP menuTime
+			
+	
 
 play ENDP; end game
 
