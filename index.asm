@@ -24,7 +24,14 @@ displayCreditPrompt BYTE "Your available balance is: $ ", 0
 promptBad BYTE "Invalid input, please enter again", 13, 10, 0
 credits DWORD 0
 
-
+; play variables
+playPrompt db "Please enter a number betwen 1 and 10: ", 0
+playGuessCorrect BYTE "You guessed correct!", 13, 10, 0
+playGuessIncorrect BYTE "You guessed incorrectly.", 13, 10, 0
+playAgain BYTE "1. Play again", 13, 10, 0
+returnMenu BYTE "2. Return to menu. ", 13, 10, 0
+guess dd ?
+random dd ?
 .code
 
 ; ==== = main ============================================ =
@@ -137,6 +144,7 @@ jmp endChoice
 
 choice3 :
 ; call choice 3
+CALL play
 jmp endChoice
 
 choice4 :
@@ -167,6 +175,52 @@ CALL Crlf
 CALL WaitMsg; Press any button to continue
 ret
 displayCredit ENDP; End displayCredit
+
+
+; ======== = play the game ==============
+; randomize a number between 1 & 10
+; ask the user to guess the number
+; if guessed correctly, the user is awarded $2, ask if they would like to play again, if not display main menu
+; else display a message with the correct number& inform the user they have lost
+; ask the user if they would like to play again, if not display the main menu
+
+play PROC; Start the game
+
+mov edx, offset playPrompt
+call WriteString
+call ReadInt
+mov guess, eax
+
+
+rdtsc
+xor edx, edx
+mov ecx, 10 - 1
+div ecx
+mov eax, edx
+
+call WriteInt; remove when done, just to see if generation is working
+
+cmp eax, guess
+jne not_equal
+
+mov edx, offset playGuessCorrect
+call WriteString
+jmp end_comparision
+
+not_equal:
+	mov edx, offset playGuessIncorrect
+	call WriteString
+	jmp end_comparision
+
+
+end_comparision:
+	mov edx, offset playAgain;
+	call WriteString
+	mov edx, offset returnMenu;
+	call WriteString;
+
+play ENDP; end game
+
 
 end main
 

@@ -138,7 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <MASM Include="hello.asm">
+    <MASM Include="index.asm">
       <FileType>Document</FileType>
     </MASM>
   </ItemGroup>
